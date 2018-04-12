@@ -1,0 +1,44 @@
+import { Injectable } from '@angular/core';
+import {AngularFireDatabase} from "angularfire2/database/database";
+import set = Reflect.set;
+
+@Injectable()
+export class NotesService{
+
+  constructor(public afDB: AngularFireDatabase){}
+  notes = [];
+  public getNotes(){
+    //return this.notes;
+    return this.afDB.list('notes/').valueChanges();
+  }
+  public getNote(id){
+    //return this.notes.filter(function (e , i) {return e.id == id})[0] || {id:null, title:null, description:null};
+    return this.afDB.object('notes/'+id).valueChanges();
+  }
+
+  public createNote(note){
+    this.afDB.database.ref('notes/'+note.id).set(note);
+    //this.notes.push(note);
+  }
+
+  public deleteNote(note){
+    /*for(let i = 0; i < this.notes.length; i++){
+      if(this.notes[i].id == note.id){
+        this.notes.splice(i,1);
+      }
+    }*/
+    this.afDB.database.ref('notes/'+note.id).remove();
+
+  }
+
+  public editNote(note){
+    /*for(let i = 0; i < this.notes.length; i++){
+      if(this.notes[i].id == note.id){
+        this.notes[i] =note;
+      }
+    }*/
+    this.afDB.database.ref('notes/'+note.id).set(note);
+
+
+  }
+}
